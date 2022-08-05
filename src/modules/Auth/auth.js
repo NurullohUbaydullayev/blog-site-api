@@ -5,7 +5,7 @@ const { selectUser } = require("./model");
 module.exports = {
   LOGIN: async (req, res) => {
     try {
-      const { login, password } = req.body;
+      const { login, password } = req.query;
       const foundUser = await selectUser(login, password);
       if (foundUser) {
         const token = jwt.sign(foundUser, SECRET_KEY);

@@ -92,7 +92,7 @@ module.exports = {
   },
   SEARCH: async (req, res) => {
     try {
-      const { searchValue } = req.body;
+      const { searchValue } = req.query;
       const foundPosts = await searchPost(searchValue);
       res.status(200).json(foundPosts);
     } catch (err) {
