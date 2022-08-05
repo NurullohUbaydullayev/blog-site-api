@@ -33,8 +33,9 @@ module.exports = {
   },
   GET_SINGLE_POST: async (req, res) => {
     try {
-      const { id } = req.params;
-      const singlePost = await getSinglePost(id);
+      const { postId } = req.params;
+      console.log(postId);
+      const singlePost = await getSinglePost(postId);
       if (singlePost) res.send(singlePost);
       else res.status(404).send({ message: "Not found" });
     } catch (err) {
