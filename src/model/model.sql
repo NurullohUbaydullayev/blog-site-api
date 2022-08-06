@@ -58,6 +58,7 @@ SELECT
 FROM 
     posts
 INNER JOIN categories cat ON cat.category_name = posts.category_name
+WHERE cat.category_name = 'Design Theory'
 ORDER BY
 	created_at DESC
 LIMIT 10 OFFSET 0;

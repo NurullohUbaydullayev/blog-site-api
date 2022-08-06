@@ -1,6 +1,6 @@
 const { fetch, fetchAll } = require("../../lib/postgres");
 
-const READ_TODOS = `
+const READ_POSTS = `
   SELECT 
     posts.id AS id,
     posts.title AS title,
@@ -12,6 +12,21 @@ const READ_TODOS = `
   ORDER BY
     created_at DESC
   LIMIT 10 OFFSET $1;
+`;
+
+const GET_POSTS_BY_CATEGORY = `
+  SELECT 
+    posts.id AS id,
+    posts.title AS title,
+    posts.category_name AS category_name,
+    posts.created_at AS created_time
+  FROM 
+    posts
+  INNER JOIN categories cat ON cat.category_name = posts.category_name
+  WHERE cat.category_name = $1
+  ORDER BY
+    created_at DESC
+  LIMIT 10 OFFSET $2;
 `;
 
 const GET_SINGLE_POST = `
@@ -58,8 +73,10 @@ const SEARCH_POST = `
     title ILIKE $1;
 `;
 
-const readPosts = (offset) => fetchAll(READ_TODOS, offset);
+const readPosts = (offset) => fetchAll(READ_POSTS, offset);
 const getPostsLength = () => fetch(GET_POSTS_LENGTH);
+const getPostsByCategory = (categoryName, offset) =>
+  fetchAll(GET_POSTS_BY_CATEGORY, categoryName, offset);
 const getSinglePost = (id) => fetch(GET_SINGLE_POST, id);
 const createPost = (userId, categoryName, postTitle, imageUrl, postBody) =>
   fetch(CREATE_POST, userId, categoryName, postTitle, imageUrl, postBody);
@@ -72,6 +89,7 @@ module.exports = {
   readPosts,
   getPostsLength,
   getSinglePost,
+  getPostsByCategory,
   createPost,
   updatePost,
   deletePost,

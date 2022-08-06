@@ -6,6 +6,7 @@ const {
   updatePost,
   deletePost,
   searchPost,
+  getPostsByCategory,
 } = require("./model");
 const { SECRET_KEY } = require("../../config/config");
 const jwt = require("jsonwebtoken");
@@ -39,7 +40,25 @@ module.exports = {
       if (singlePost) res.send(singlePost);
       else res.status(404).send({ message: "Not found" });
     } catch (err) {
-      console.log("Todos => [GET_SINGLE_POST]: ", err.message);
+      console.log("Posts => [GET_SINGLE_POST]: ", err.message);
+      res.status(500).json({ message: "SERVER error" });
+    }
+  },
+  GET_POSTS_BY_CATEGORY: async (req, res) => {
+    try {
+      const { categoryname } = req.headers;
+      const { page } = req.query;
+      if (categoryname === "All") {
+        const posts = await readPosts(page * 10);
+        const postsLength = await getPostsLength();
+        res.send({ length: postsLength, posts });
+        return;
+      }
+      const postsLength = await getPostsLength();
+      const byCategories = await getPostsByCategory(categoryname, page);
+      res.send({ length: postsLength, posts: byCategories });
+    } catch (err) {
+      console.log("Posts => [GET_POSTS_BY_CATEGORY]: ", err.message);
       res.status(500).json({ message: "SERVER error" });
     }
   },
